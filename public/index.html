@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Umshun</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+    crossorigin="anonymous">
+    <script src="//cdn.socket.io/socket.io-1.4.3.js"></script>
+    <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script src="index.js"></script>
+    <div class="jumbotron">
+        <h1>Umshun</h1>
+    </div>
+</head>
+
+<body>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Play words as you hear them</h3>
+            <a>score <span id="score" class="badge">0</span></a>
+        </div>
+        <div class="panel-body">
+            <div class="btn-group-vertical">
+                <button class="btn btn-primary" onclick="myclick('um');">um</button>
+                <button class="btn btn-primary" onclick="myclick('like');">like</button>
+                <button class="btn btn-primary" onclick="myclick('OK');">OK</button>
+                <button class="btn btn-primary" onclick="myclick('you know');">you know</button>
+                <button class="btn btn-primary" onclick="myclick('Uh');">Uh</button>
+                <button class="btn btn-primary" onclick="myclick('see');">see</button>
+                <button class="btn btn-primary" onclick="myclick('right');">right</button>
+                <button class="btn btn-primary" onclick="myclick('well');">well</button>
+                <button class="btn btn-primary" onclick="myclick('swear');">swear</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
