@@ -15,23 +15,38 @@
 
 <body>
 
-    <div class="panel panel-default">
+    <div class="panel panel-primary">
         <div class="panel-heading">
-            <h3 class="panel-title">Play words as you hear them</h3>
-            <a>score <span id="score" class="badge">0</span></a>
+            <div class="panel-title">Settings</div>
         </div>
         <div class="panel-body">
-            <div class="btn-group-vertical">
-                <button class="btn btn-primary" onclick="myclick('um');">um</button>
-                <button class="btn btn-primary" onclick="myclick('like');">like</button>
-                <button class="btn btn-primary" onclick="myclick('OK');">OK</button>
-                <button class="btn btn-primary" onclick="myclick('you know');">you know</button>
-                <button class="btn btn-primary" onclick="myclick('Uh');">Uh</button>
-                <button class="btn btn-primary" onclick="myclick('see');">see</button>
-                <button class="btn btn-primary" onclick="myclick('right');">right</button>
-                <button class="btn btn-primary" onclick="myclick('well');">well</button>
-                <button class="btn btn-primary" onclick="myclick('swear');">swear</button>
-            </div>
+            <label>My Nickname</label>
+            <input type="text" class="form-control" id="name" onchange="nameChanged()">
+            <label>Presenter's Nickname</label>
+            <input type="text" class="form-control" id="speaker" onchange="speakerChanged()">
+            <label>Words to listen for (nine)</label>
+            <input type="text" class="form-control" id="words" onchange="wordsChanged()" value="um,like,OK,you know,uh,see,right,well,swear">
+        </div>
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="panel-title">Play</div>
+        </div>
+        <div class="panel-body">
+            <div id="word-buttons" class="btn-group-vertical" />
+        </div>
+        <div class="panel-footer">My score
+            <div id="score" class="badge">0</div>
+        </div>
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="panel-title">Scoreboard</div>
+        </div>
+        <div class="panel-body">
+            <ul id="scores" class="list-group" />
         </div>
     </div>
 </body>
