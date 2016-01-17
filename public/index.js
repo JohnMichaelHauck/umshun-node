@@ -4,11 +4,15 @@ var words;
 
 $(document).ready(function () {
     for (var i = 0; i < 9; i++) {
-        $("#word-buttons").append("<button id='word" + i + "' class='btn btn-primary' onclick='heardWord(" + i + ");'>...</button>");
+        $("#word-buttons").append("<button id='word" + i + "' type='button' class='btn btn-primary' onclick='heardWord(" + i + ");'>...</button>");
     };
 
+    for (var i = 0; i < 10; i++) {
+        $("#scores").append("<li class='list-group-item'><b>" + (i + 1) + ":&nbsp</b><text id='player" + i + "'>...</text><span id='score" + i + "' class='badge'>0</span></li>");
+    }
+
     for (var i = 0; i < 9; i++) {
-        $("#scores").append("<li class='list-group-item'><b>" + i + ":&nbsp</b><text id='player" + i + "'>...</text><span id='score" + i + "' class='badge'>0</span></li>");
+        $("#heards").append("<li class='list-group-item'><text id='heard" + i + "'>...</text><span id='count" + i + "' class='badge'>0</span></li>");
     }
 
     wordsChanged();
@@ -51,6 +55,15 @@ socket.on("scores", function (players) {
     players.forEach(function (player) {
         $("#player" + i).text(player.name);
         $("#score" + i).text(player.score);
+        i++;
+    });
+});
+
+socket.on("heards", function (heards) {
+    var i = 0;
+    heards.forEach(function (heard) {
+        $("#heard" + i).text(heard.heard);
+        $("#count" + i).text(heard.count);
         i++;
     });
 });
