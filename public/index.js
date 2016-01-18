@@ -7,7 +7,7 @@ $(document).ready(function () {
         $("#word-buttons").append("<button id='word" + i + "' type='button' class='btn btn-primary' onclick='heardWord(" + i + ");'>...</button>");
     };
 
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 9; i++) {
         $("#scores").append("<li class='list-group-item'><b>" + (i + 1) + ":&nbsp</b><text id='player" + i + "'>...</text><span id='score" + i + "' class='badge'>0</span></li>");
     }
 
@@ -37,11 +37,12 @@ function heardWord(index) {
     var word = words[index];
     if (intervalId == 0) {
         socket.emit("heard", word);
+        $('.btn').prop('disabled', true);
         intervalId = setInterval(function () {
             socket.emit("score");
-            socket.emit("scores", 9);
             clearInterval(intervalId);
             intervalId = 0;
+            $('.btn').prop('disabled', false);
         }, 2000);
     }
 }

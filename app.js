@@ -14,81 +14,76 @@ app.get('/', function (req, res) {
 });
 
 var throttleMs = 2000;
-var speakers = {};
+var Speakers = {};
 
 function addPlayerToSpeaker(socket) {
-    socket.join(socket.mySpeaker);
-    if (socket.mySpeaker in speakers === false) {
-        var speaker = {};
-        speaker.players = [];
-        speaker.heards = {};
-        speaker.scoresChanged = false;
-        speakers[socket.mySpeaker] = speaker;
+    var speakerName = socket.speakerName;
+    socket.join(speakerName);
+    if (socket.speakerName in Speakers === false) {
+        Speakers[speakerName] = { players: [], heards: {}, broadcastScores: false, broadcastHeards: false };
     }
-    speakers[socket.mySpeaker].players.push(socket);
+    Speakers[speakerName].players.push(socket);
 }
 
 function removePlayerFromSpeaker(socket) {
-    socket.leave(socket.mySpeaker);
-    speakers[socket.mySpeaker].players.splice(speakers[socket.mySpeaker].players.indexOf(socket), 1);
-    if (speakers[socket.mySpeaker].players.length === 0) {
-        delete speakers[socket.mySpeaker];
+    var speakerName = socket.speakerName;
+    socket.leave(speakerName);
+    Speakers[speakerName].players.splice(Speakers[speakerName].players.indexOf(socket), 1);
+    if (Speakers[speakerName].players.length === 0) {
+        delete Speakers[speakerName];
     }
 }
 
 sio.on('connection', function (socket) {
-    socket.myScore = 0;
-    socket.myWord = '';
-    socket.myTod = new Date().getTime() - throttleMs; // keep the player from being throttled right away
-    socket.myName = 'player';
-    socket.mySpeaker = 'speaker';
+    socket.score = 0;
+    socket.heardWord = '';
+    socket.heardTime = new Date().getTime() - throttleMs; // keep the player from being throttled right away
+    socket.playerName = 'player';
+    socket.speakerName = 'speaker';
 
     addPlayerToSpeaker(socket);
 
-    socket.on('name', function (name) { // player tells us their name
-        console.log('player : name = ' + name);
-        socket.myName = name;
+    socket.on('name', function (playerName) { // player tells us their name
+        console.log('player : name = ' + playerName);
+        socket.playerName = playerName;
     });
 
-    socket.on('speaker', function (speaker) { // player is listening to a specific speaker
-        speaker = speaker.toLowerCase();
-        console.log('player ' + socket.myName + ': speaker = ' + speaker);
+    socket.on('speaker', function (speakerName) { // player is listening to a specific speaker
+        speakerName = speakerName.toLowerCase();
+        console.log('player ' + socket.playerName + ': speaker = ' + speakerName);
         removePlayerFromSpeaker(socket);
-        socket.mySpeaker = speaker;
+        socket.speakerName = speakerName;
         addPlayerToSpeaker(socket);
     });
 
     socket.on('heard', function (word) { // player heard a word
         word = word.toLowerCase();
-        var tod = new Date().getTime();
-        if (socket.myTod + throttleMs > tod) { // limit player to one heard every 2 seconds
-            console.log('player ' + socket.myName + ': throttled = ' + word);
+        var now = new Date().getTime();
+        if (socket.heardTime + throttleMs > now) { // limit player to one heard every 2 seconds
+            console.log('player ' + socket.playerName + ': throttled = ' + word);
         }
         else {
-            console.log('player ' + socket.myName + ': heard = ' + word);
-            if (speakers[socket.mySpeaker].heards[word]) {
-                speakers[socket.mySpeaker].heards[word]++;
-            } else {
-                speakers[socket.mySpeaker].heards[word] = 1;
-            }
-            speakers[socket.mySpeaker].scoresChanged = true;
-            for (var i = 0; i < speakers[socket.mySpeaker].players.length; i++) { // other players score from this player ...
-                var other = speakers[socket.mySpeaker].players[i];
-                if (other.myWord === word) { // ... and just played the same word ...
-                    if (other.myTod + throttleMs > tod) { // ... less than 2 seconds ago.
-                        other.myScore++; // logically this cannot be the same as the player (2 second rule)
-                        console.log('  player ' + other.myName + ': scores');
+            console.log('player ' + socket.playerName + ': heard = ' + word);
+            Speakers[socket.speakerName].heards[word] = (Speakers[socket.speakerName].heards[word]) ? Speakers[socket.speakerName].heards[word] + 1 : 1;
+            Speakers[socket.speakerName].broadcastHeards = true;
+            for (var i = 0; i < Speakers[socket.speakerName].players.length; i++) { // other players score from this player ...
+                var other = Speakers[socket.speakerName].players[i];
+                if (other.heardWord === word) { // ... and just played the same word ...
+                    if (other.heardTime + throttleMs > now) { // ... less than 2 seconds ago.
+                        other.score++; // logically this cannot be the same as the player (2 second rule)
+                        Speakers[socket.speakerName].broadcastScores = true;
+                        console.log('  player ' + other.playerName + ': scores');
                     }
                 }
             }
-            socket.myTod = tod; // save so this player can score from others who play this word in the next two seconds
-            socket.myWord = word;
+            socket.heardTime = now; // save so this player can score from others who play this word in the next two seconds
+            socket.heardWord = word;
         }
     });
 
     socket.on('score', function () { // player wants to know their score
-        console.log('player ' + socket.myName + ': score = ' + socket.myScore);
-        socket.emit('score', socket.myScore);
+        console.log('player ' + socket.playerName + ': score = ' + socket.score);
+        socket.emit('score', socket.score);
     });
 
     socket.on('disconnect', function () { // player is bored
@@ -97,21 +92,25 @@ sio.on('connection', function (socket) {
 });
 
 var interval = setInterval(function () {
-    for (var speakerName in speakers) {
-        var speaker = speakers[speakerName];
-        if (speaker.scoresChanged === true) {
-            speaker.scoresChanged = false;
-
-            var players = speaker.players
-                .map(function (s) { return { name: s.myName, score: s.myScore }; })
-                .sort(function (a, b) { return b.score - a.score; })
-                .slice(0, 9);
-            sio.to(speakerName).emit('scores', players);
-
+    for (var speakerName in Speakers) {
+        var speaker = Speakers[speakerName];
+        
+        if (speaker.broadcastHeards === true) {
+            speaker.broadcastHeards = false;
             var heards = Object.keys(speaker.heards)
                 .map(function (s) { return { heard: s, count: speaker.heards[s] }; })
-                .sort(function (a, b) { return b.count - a.count; });
+                .sort(function (a, b) { return b.count - a.count; })
+                .slice(0, 8);
             sio.to(speakerName).emit('heards', heards);
+        }
+
+        if (speaker.broadcastScores === true) {
+            speaker.broadcastScores = false;
+            var players = speaker.players
+                .map(function (s) { return { name: s.playerName, score: s.score }; })
+                .sort(function (a, b) { return b.score - a.score; })
+                .slice(0, 8);
+            sio.to(speakerName).emit('scores', players);
         }
     }
 }, 5000);
