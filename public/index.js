@@ -4,7 +4,7 @@ var words;
 
 $(document).ready(function () {
     for (var i = 0; i < 9; i++) {
-        $("#word-buttons").append("<button id='word" + i + "' type='button' class='btn btn-primary' onclick='heardWord(" + i + ");'>...</button>");
+        $("#word-buttons").append("<button id='word" + i + "' type='button' class='btn btn-success btn-lg' onclick='heardWord(" + i + ");' style='margin:6px'>...</button>");
     };
 
     for (var i = 0; i < 9; i++) {
@@ -36,8 +36,8 @@ function wordsChanged() {
 function heardWord(index) {
     var word = words[index];
     if (intervalId == 0) {
-        socket.emit("heard", word);
         $('.btn').prop('disabled', true);
+        socket.emit("heard", word);
         intervalId = setInterval(function () {
             socket.emit("score");
             clearInterval(intervalId);

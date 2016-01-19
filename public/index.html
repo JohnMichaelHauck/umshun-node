@@ -8,18 +8,27 @@
     <script src="//cdn.socket.io/socket.io-1.4.3.js"></script>
     <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
     <script src="index.js"></script>
-    <div class="jumbotron">
+    <style>
+        div.panel {
+            padding: 6px 6px 6px 6px;
+        }
+    </style>
+
+    <div class="jumbotron" style="padding: 6px 6px 6px 6px">
         <h1>Umshun</h1>
+        <p>A tiny little game by LakeFx</p>
+        <a href="mailto:lakefx-umshun@yahoo.com">lakefx-umshun@yahoo.com</a>
     </div>
 </head>
 
 <body>
 
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <div class="panel-title">What is UmShun?</div>
+                    <div class="panel-title">
+                        <h3>What is UmShun?</h3></div>
                 </div>
                 <div class="panel-body">
                     <h3>A Multiplayer Game</h3>
@@ -46,12 +55,14 @@
             </div>
         </div>
     </div>
-    
+
     <div class="row">
-        <div class="col-md-2">
+
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <div class="panel-title">Settings</div>
+                    <div class="panel-title">
+                        <h3>Settings</h3></div>
                 </div>
                 <div class="panel-body">
                     <label>My Nickname</label>
@@ -64,13 +75,15 @@
             </div>
         </div>
 
-        <div class="col-md-2">
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <div class="panel-title">Play</div>
+                    <div class="panel-title">
+                        <h3>Play</h3></div>
                 </div>
                 <div class="panel-body">
-                    <div id="word-buttons" class="btn-group btn-group-vertical" role="group" />
+                    <div id="word-buttons">
+                    </div>
                 </div>
                 <div class="panel-footer">My score
                     <div id="score" class="badge">0</div>
@@ -78,10 +91,15 @@
             </div>
         </div>
 
-        <div class="col-md-2">
+    </div>
+
+    <div class="row">
+
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <div class="panel-title">Scoreboard</div>
+                    <div class="panel-title">
+                        <h3>Scoreboard</h3></div>
                 </div>
                 <div class="panel-body">
                     <ul id="scores" class="list-group" />
@@ -89,29 +107,14 @@
             </div>
         </div>
 
-        <div class="col-md-2">
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <div class="panel-title">Word Frequency</div>
+                    <div class="panel-title">
+                        <h3>Word Frequency</h3></div>
                 </div>
                 <div class="panel-body">
                     <ul id="heards" class="list-group" />
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-2">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <div class="panel-title">Settings</div>
-                </div>
-                <div class="panel-body">
-                    <label>My Nickname</label>
-                    <input type="text" class="form-control" id="name" onchange="nameChanged()">
-                    <label>Speaker's Nickname</label>
-                    <input type="text" class="form-control" id="speaker" onchange="speakerChanged()">
-                    <label>Words to play</label>
-                    <input type="text" class="form-control" id="words" onchange="wordsChanged()" value="um,like,OK,you know,uh,see,right,well,swear">
                 </div>
             </div>
         </div>
