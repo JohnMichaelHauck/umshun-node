@@ -39,7 +39,7 @@ sio.on('connection', function (socket) {
     socket.heardWord = '';
     socket.heardTime = new Date().getTime() - throttleMs; // keep the player from being throttled right away
     socket.playerName = 'player';
-    socket.speakerName = 'speaker';
+    socket.speakerName = socket.id; // create a unique speaker name by defaul to allow the serious mode to work without any setup
 
     addPlayerToSpeaker(socket);
 
