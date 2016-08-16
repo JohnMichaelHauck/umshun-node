@@ -2,6 +2,7 @@ var Express = require('express');
 var Server = require('http').Server;
 var Sio = require('socket.io');
 var Path = require('path');
+var port = process.env.PORT || 3000;
 
 var app = Express();
 var server = Server(app);
@@ -115,6 +116,6 @@ var interval = setInterval(function () {
     }
 }, 5000);
 
-server.listen(3000, function () {
-    console.log('Server on port 3000');
+server.listen(port, function () {
+    console.log('listening on port ' + port);
 });
